@@ -631,9 +631,7 @@ class Trainer:
         if metrics is None:
             metrics = []
 
-        pl = tf.keras.callbacks.ProgbarLogger(
-            count_mode='steps',
-            stateful_metrics=["damping_factor", "attempts"])
+        pl = tf.keras.callbacks.ProgbarLogger()
 
         pl.set_params(
             {"verbose": 1, "epochs": epochs, "steps": steps})
