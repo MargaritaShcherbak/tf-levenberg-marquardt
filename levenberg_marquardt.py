@@ -771,9 +771,7 @@ class ModelWrapper(tf.keras.Model):
             if callbacks is None:
                 callbacks = []
 
-            callbacks.append(tf.keras.callbacks.ProgbarLogger(
-                count_mode='steps',
-                stateful_metrics=["damping_factor", "attempts"]))
+            callbacks.append(tf.keras.callbacks.ProgbarLogger())
 
         return super(ModelWrapper, self).fit(
             x=x,
