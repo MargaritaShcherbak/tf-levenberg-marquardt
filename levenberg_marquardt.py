@@ -696,7 +696,8 @@ class ModelWrapper(tf.keras.Model):
         self.trainer = None
 
     def call(self, inputs, training=None, mask=None):
-        return self.model(inputs, training, mask)
+        return self.model(inputs, training=training)
+
 
     def compile(self,
                 optimizer=tf.keras.optimizers.SGD(learning_rate=1.0),
