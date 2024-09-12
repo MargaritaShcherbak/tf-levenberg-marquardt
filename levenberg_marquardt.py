@@ -572,17 +572,22 @@ class Trainer:
         input_shape = inputs.shape[1::]
         target_shape = targets.shape[1::]
         _inputs = tf.keras.Input(shape=input_shape,
-                                 dtype=inputs.dtype)
+                             dtype=inputs.dtype)
         _targets = tf.keras.Input(shape=target_shape,
-                                  dtype=targets.dtype)
+                              dtype=targets.dtype)
         outputs = self.model(_inputs)
-        _targets, outputs = compile_utils.match_dtype_and_rank(_targets, outputs, None) [:2]
+
+        # Обрабатываем возвращаемые значения, чтобы они были корректными тензорами
+        matched = compile_utils.match_dtype_and_rank(_targets, outputs, None)
+
+        _targets, outputs = matched[:2]  # Оставляем только нужные значения
 
         if isinstance(outputs, tuple):
-            outputs = outputs[0]
+            outputs = outputs[0]  # Извлекаем тензор из кортежа, если это необходимо
 
         residuals = self.loss.residuals(_targets, outputs)
         return tf.reduce_prod(residuals.shape[1::])
+
 
     def reset_damping_factor(self):
         self.damping_factor.assign(self.damping_algorithm.starting_value)
