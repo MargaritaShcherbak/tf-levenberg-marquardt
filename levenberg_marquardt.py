@@ -575,22 +575,25 @@ class Trainer:
         _inputs = tf.keras.Input(shape=input_shape, dtype=inputs.dtype)
         _targets = tf.keras.Input(shape=target_shape, dtype=targets.dtype)
     
-
+    # Получаем выходные данные модели
         outputs = self.model(_inputs)
-    
+
+    # Проверяем на None
         if outputs is None:
             raise ValueError("Model outputs are None. Check your model's structure.")
     
         if _targets is None:
             raise ValueError("Targets are None. Check your input data.")
 
-        _targets, outputs = compile_utils.match_dtype_and_rank(_targets, outputs, None)[:2]
+    # Приведение типов и рангов вручную
+        _targets = tf.cast(_targets, dtype=outputs.dtype)
     
         if isinstance(outputs, tuple):
             outputs = outputs[0]  # Извлекаем тензор из кортежа, если нужно
 
         residuals = self.loss.residuals(_targets, outputs)
         return tf.reduce_prod(residuals.shape[1::])
+
 
 
 
