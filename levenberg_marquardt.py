@@ -577,16 +577,21 @@ class Trainer:
                               dtype=targets.dtype)
         outputs = self.model(_inputs)
 
-        # Обрабатываем возвращаемые значения, чтобы они были корректными тензорами
+  
         matched = compile_utils.match_dtype_and_rank(_targets, outputs, None)
-
-        _targets, outputs = matched[:2]  # Оставляем только нужные значения
+        _targets, outputs = matched[:2]
 
         if isinstance(outputs, tuple):
-            outputs = outputs[0]  # Извлекаем тензор из кортежа, если это необходимо
+            outputs = outputs[0]  # Извлекаем тензор из кортежа, если нужно
 
         residuals = self.loss.residuals(_targets, outputs)
+
+ 
+        if isinstance(residuals, tuple):
+            residuals = residuals[0]  # Извлекаем тензор, если это кортеж
+
         return tf.reduce_prod(residuals.shape[1::])
+
 
 
     def reset_damping_factor(self):
