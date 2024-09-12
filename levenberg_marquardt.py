@@ -577,16 +577,8 @@ class Trainer:
                               dtype=targets.dtype)
         outputs = self.model(_inputs)
 
-  
-        matched = compile_utils.match_dtype_and_rank(_targets, outputs, None)
-        _targets, outputs = matched[:2]
-
-        if isinstance(outputs, tuple):
-            outputs = outputs[0]  # Извлекаем тензор из кортежа, если нужно
-
         residuals = self.loss.residuals(_targets, outputs)
 
- 
         if isinstance(residuals, tuple):
             residuals = residuals[0]  # Извлекаем тензор, если это кортеж
 
