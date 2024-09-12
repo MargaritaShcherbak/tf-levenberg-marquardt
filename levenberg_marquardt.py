@@ -572,18 +572,26 @@ class Trainer:
     def _compute_num_outputs(self, inputs, targets):
         input_shape = inputs.shape[1::]
         target_shape = targets.shape[1::]
-        _inputs = tf.keras.Input(shape=input_shape,
-                             dtype=inputs.dtype)
-        _targets = tf.keras.Input(shape=target_shape,
-                              dtype=targets.dtype)
+        _inputs = tf.keras.Input(shape=input_shape, dtype=inputs.dtype)
+        _targets = tf.keras.Input(shape=target_shape, dtype=targets.dtype)
+    
+
         outputs = self.model(_inputs)
+    
+        if outputs is None:
+            raise ValueError("Model outputs are None. Check your model's structure.")
+    
+        if _targets is None:
+            raise ValueError("Targets are None. Check your input data.")
+
+        _targets, outputs = compile_utils.match_dtype_and_rank(_targets, outputs, None)[:2]
+    
+        if isinstance(outputs, tuple):
+            outputs = outputs[0]  # Извлекаем тензор из кортежа, если нужно
 
         residuals = self.loss.residuals(_targets, outputs)
-
-        if isinstance(residuals, tuple):
-            residuals = residuals[0]  # Извлекаем тензор, если это кортеж
-
         return tf.reduce_prod(residuals.shape[1::])
+
 
 
 
