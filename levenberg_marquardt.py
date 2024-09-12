@@ -576,7 +576,8 @@ class Trainer:
         _targets = tf.keras.Input(shape=target_shape,
                                   dtype=targets.dtype)
         outputs = self.model(_inputs)
-        _targets, outputs = compile_utils.match_dtype_and_rank(_targets, outputs, None)[:2]
+        _targets, outputs = compile_utils.match_dtype_and_rank(_targets, outputs, None) [:2]
+        
         residuals = self.loss.residuals(_targets, outputs)
         return tf.reduce_prod(residuals.shape[1::])
 
