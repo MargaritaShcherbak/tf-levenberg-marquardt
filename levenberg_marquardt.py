@@ -33,9 +33,10 @@ class MeanSquaredError(tf.keras.losses.MeanSquaredError):
     """
 
     def residuals(self, y_true, y_pred):
-        y_pred = tf.convert_to_tensor(y_pred)
-        y_true = tf.cast(y_true, y_pred.dtype)
+        y_pred = tf.keras.layers.Lambda(lambda x: tf.convert_to_tensor(x))(y_pred)
+        y_true = tf.keras.layers.Lambda(lambda x: tf.cast(x, y_pred.dtype))(y_true)
         return y_true - y_pred
+
 
 
 class ReducedOutputsMeanSquaredError(tf.keras.losses.Loss):
